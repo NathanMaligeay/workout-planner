@@ -9,7 +9,9 @@ namespace WorkoutPlannerBackend.Entities.Models
         [Required]
         public string WorkoutName { get; set; }
         [Required]
-        public string Username { get; set; }
+        public AppUser AppUser { get; set; }
+        [Required]
+        public string AppUserId { get; set; }
         public List<ExerciseWorkout> ExerciseWorkoutList { get; set; } = [];
 
     }

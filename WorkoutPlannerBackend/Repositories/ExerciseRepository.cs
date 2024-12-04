@@ -28,13 +28,13 @@ namespace WorkoutPlannerBackend.Repositories
             return true;
         }
 
-        public async Task<bool> DeleteExercise(string ExerciseName)
+        public async Task<bool> DeleteExercise(string exerciseName)
         {
-            var exercise = await GetExercise(ExerciseName);
+            var exercise = await GetExerciseByName(exerciseName);
 
             if (exercise == null)
             {
-                throw new InvalidOperationException($"Exercise {ExerciseName} not found.");
+                throw new InvalidOperationException($"Exercise {exerciseName} not found.");
             }
 
             _dbContext.Exercises.Remove(exercise);
@@ -42,7 +42,7 @@ namespace WorkoutPlannerBackend.Repositories
             return true;
         }
 
-        public async Task<Exercise> GetExercise(string ExerciseName)
+        public async Task<Exercise> GetExerciseByName(string ExerciseName)
         {
             var exercise = await _dbContext.Exercises.FirstOrDefaultAsync(e => e.ExerciseName.ToLower().Trim() == ExerciseName)
                 ?? throw new Exception($"Exercise {ExerciseName} not found.");
@@ -63,6 +63,13 @@ namespace WorkoutPlannerBackend.Repositories
         {
             return await _dbContext.Exercises
                 .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Exercise>> GetExercisesUser(string userEmail)
+        {
+            return await _dbContext.Exercises
+                .Where(e => e.AppUser.Email == userEmail)
                 .ToListAsync();
         }
     }

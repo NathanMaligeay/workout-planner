@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using WorkoutPlannerBackend.Business.Interfaces;
-using WorkoutPlannerBackend.DTO;
+using WorkoutPlannerBackend.DTO.Exercise;
 using WorkoutPlannerBackend.Entities;
 using WorkoutPlannerBackend.Entities.Models;
 using WorkoutPlannerBackend.Repositories.Interfaces;
@@ -55,7 +55,7 @@ namespace WorkoutPlannerBackend.Business
 
         public async Task<Exercise> GetExercise(string exerciseName)
         {
-            var exercise = await _exerciseRepository.GetExercise(exerciseName);
+            var exercise = await _exerciseRepository.GetExerciseByName(exerciseName);
             if (exercise == null)
             {
                 throw new InvalidOperationException($" Exercise {exerciseName} not found");
@@ -63,15 +63,18 @@ namespace WorkoutPlannerBackend.Business
             return exercise;
         }
 
-        public async Task<IEnumerable<Exercise>> GetExercises()
+        public async Task<IEnumerable<Exercise>> GetExercises(string userEmail)
         {
-            var exercises = await _exerciseRepository.GetExercises();
-            if (exercises == null)
+            var baseExercises = await _exerciseRepository.GetExercises();
+            var userExercises = await _exerciseRepository.GetExercisesUser(userEmail);
+
+            var allExercises = baseExercises.Concat(userExercises);
+            if (allExercises == null)
             {
                 throw new InvalidOperationException("No exercises found");
             }
 
-            return exercises;
+            return allExercises;
         }
 
         public Task<bool> UpdateCustomExercise(Exercise exercise)

@@ -1,4 +1,4 @@
-﻿using WorkoutPlannerBackend.DTO;
+﻿using WorkoutPlannerBackend.DTO.Exercise;
 using WorkoutPlannerBackend.Entities.Models;
 
 namespace WorkoutPlannerBackend.Business.Interfaces
@@ -10,6 +10,6 @@ namespace WorkoutPlannerBackend.Business.Interfaces
         Task<bool> DeleteCustomExercise(Exercise exercise);
         Task<bool> UpdateCustomExercise(Exercise exercise);
         Task<Exercise> GetExercise(string exerciseName);
-        Task<IEnumerable<Exercise>> GetExercises();
+        Task<IEnumerable<Exercise>> GetExercises(string userEmail);
     }
 }

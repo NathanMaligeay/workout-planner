@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using WorkoutPlannerBackend.Entities.Enums;
 
-namespace WorkoutPlannerBackend.DTO
+namespace WorkoutPlannerBackend.DTO.Exercise
 {
     public class CustomExerciseWithVideoDTO
     {
@@ -10,7 +10,7 @@ namespace WorkoutPlannerBackend.DTO
         [Required]
         public List<MuscleGroupEnum> MuscleGroups { get; init; }
         [Required]
-        public string Video {  get; init; }
+        public string Video { get; init; }
     }
 }
 

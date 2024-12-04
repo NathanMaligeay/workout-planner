@@ -35,6 +35,32 @@ namespace WorkoutPlannerBackend.Repositories
             return true;
         }
 
+        public async Task<IEnumerable<Workout>> GetAllWorkoutsUser(string userEmail)
+        {
+            var currentUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+
+            if (currentUser == null) 
+            {
+                throw new InvalidOperationException($"User not found");
+            }
+
+            return await _dbContext.Workouts
+                .Where(w => w.AppUser == currentUser)
+                .ToListAsync();
+        }
+
+        public async Task<Workout> GetWorkoutById(string workoutId)
+        {
+            var workout = await _dbContext.Workouts.FindAsync(workoutId);
+
+            if (workout == null)
+            {
+                throw new InvalidOperationException($"Workout {workoutId} not found");
+            }
+
+            return workout;
+        }
+
         public async Task<bool> UpdateWorkout(Workout workout)
         {
             var exists = await _dbContext.Workouts.FirstOrDefaultAsync(w => w.WorkoutId == workout.WorkoutId);

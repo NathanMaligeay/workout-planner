@@ -30,17 +30,59 @@ namespace WorkoutPlannerBackend.Repositories
             }
 
             _dbContext.Remove(exerciseWorkout);
+            await _dbContext.SaveChangesAsync();
             return true;
         }
 
-        public async Task<IEnumerable<ExerciseWorkout>> GetExercisesWorkoutUser(string userName)
+        public async Task<IEnumerable<ExerciseWorkout>> GetExercisesWorkoutUser(string userEmail)
         {
-            var exists = await _dbContext.Users.FirstOrDefaultAsync(p => p.UserName == userName);
+            var exists = await _dbContext.Users.FirstOrDefaultAsync(p => p.Email == userEmail);
+
+            if (exists == null)
+            {
+                throw new InvalidOperationException($"User with email: {userEmail} does not exist");
+            }
+
             return await _dbContext.ExercisesWorkout
                 .AsNoTracking()
                 .Include(ew => ew.Workout)
-                .Where(ew => ew.Workout.Username == userName)
+                .Where(ew => ew.Workout.AppUser.Email == userEmail)
                 .ToListAsync();
+        }
+
+        public async Task<ExerciseWorkout> GetExerciseWorkoutById(string exerciseWorkoutId)
+        {
+            var exerciseWorkout = await _dbContext.ExercisesWorkout.FindAsync(exerciseWorkoutId);
+
+            if (exerciseWorkout == null)
+            {
+                throw new InvalidOperationException($"Exercise workout {exerciseWorkoutId} not found");
+            }
+            return exerciseWorkout;
+        }
+
+        public async Task<ExerciseWorkout> GetExerciseWorkoutUser(string userEmail, string exerciseWorkoutId)
+        {
+            //var userExists = await _dbContext.Users.FirstOrDefaultAsync(p => p.Email == userEmail);
+
+            //if (userExists == null)
+            //{
+            //    throw new InvalidOperationException($"User with email: {userEmail} does not exist");
+            //}
+
+            //var exerciseExist = await _dbContext.ExercisesWorkout.FindAsync(exerciseWorkoutId);
+
+            //if (exerciseExist == null)
+            //{
+            //    throw new InvalidOperationException($"Exercice workout {exerciseWorkoutId} not found");
+            //}
+
+            //return await _dbContext.ExercisesWorkout
+            //    .Where(ew => ew.workoutId == )
+            //    .Where(ew => ew.Workout.AppUser.Email == userEmail)
+            //    .Where(ew => ew.ExerciseWorkoutId == exerciseWorkoutId)
+            //    .FirstOrDefaultAsync();
+            throw new NotImplementedException();
         }
 
         public async Task<bool> UpdateExerciseWorkout(ExerciseWorkout exerciseWorkout)
