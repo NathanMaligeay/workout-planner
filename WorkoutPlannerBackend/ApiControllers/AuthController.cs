@@ -15,11 +15,12 @@ namespace WorkoutPlannerBackend.ApiControllers
         private readonly SignInManager<AppUser> _signInManager;
         public AuthController(
             UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager
-            )
+            SignInManager<AppUser> signInManager,
+            ITokenService tokenService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _tokenService = tokenService;
         }
 
         [HttpPost("login")]
@@ -38,7 +39,7 @@ namespace WorkoutPlannerBackend.ApiControllers
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDTO.Password, false);
-            
+
             if (!result.Succeeded)
             {
                 return Unauthorized();
@@ -47,6 +48,7 @@ namespace WorkoutPlannerBackend.ApiControllers
             return Ok(
                         new ConnectedDTO
                         {
+                            Username = user.UserName,
                             Email = user.Email,
                             Token = _tokenService.CreateToken(user),
                         }
@@ -54,7 +56,7 @@ namespace WorkoutPlannerBackend.ApiControllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] LoginDTO registerDTO)
+        public async Task<IActionResult> Register([FromBody] RegisterDTO registerDTO)
         {
             try
             {
@@ -73,7 +75,7 @@ namespace WorkoutPlannerBackend.ApiControllers
                 var appUser = new AppUser
                 {
                     Email = registerDTO.Email,
-                    UserName = registerDTO.Email,
+                    UserName = registerDTO.Username,
                 };
 
                 var createdUser = await _userManager.CreateAsync(appUser, registerDTO.Password);
@@ -83,13 +85,16 @@ namespace WorkoutPlannerBackend.ApiControllers
                     return Ok(
                         new ConnectedDTO
                         {
+                            Username = appUser.UserName,
                             Email = appUser.Email,
                             Token = _tokenService.CreateToken(appUser),
                         }
                         );
+
                 }
                 else
                 {
+                    Console.WriteLine("Here");
                     return StatusCode(500, createdUser.Errors);
                 }
             }

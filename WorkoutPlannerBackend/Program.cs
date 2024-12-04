@@ -7,6 +7,8 @@ using WorkoutPlannerBackend.Entities;
 using WorkoutPlannerBackend.Entities.Models;
 using WorkoutPlannerBackend.Repositories;
 using WorkoutPlannerBackend.Repositories.Interfaces;
+using Newtonsoft.Json;
+using WorkoutPlannerBackend.Services.Token;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +22,6 @@ builder.Configuration
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "WP Backend API", Version = "v1" });
@@ -48,6 +49,11 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
+
+builder.Services.AddControllers().AddNewtonsoftJson(options => {
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+});
+
 var connectionString = builder.Configuration.GetConnectionString("WPDefaultConnection");
 
 builder.Services.AddDbContext<WPDbContext>(options =>
@@ -90,6 +96,7 @@ builder.Services.AddAuthentication(options => {
 
 builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
 builder.Services.AddScoped<IExerciseWorkoutRepository, ExerciseWorkoutRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IWorkoutRepository, WorkoutRepository>();
 
 var app = builder.Build();
