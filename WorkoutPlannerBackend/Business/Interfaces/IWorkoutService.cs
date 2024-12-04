@@ -9,6 +9,6 @@ namespace WorkoutPlannerBackend.Business.Interfaces
         Task<bool> AddWorkoutExercise(string workoutId, string exerciseId);
         Task<bool> RemoveWorkoutExercise(Workout workout, string exerciseId);
         Task<Workout> GetWorkoutById(string workoutId);
-        Task<IEnumerable<Workout>> GetWorkoutsUser(string userName);
+        Task<IEnumerable<Workout>> GetWorkoutsUser(string userMail);
     }
 }

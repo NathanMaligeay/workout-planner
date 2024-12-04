@@ -76,20 +76,20 @@ namespace WorkoutPlannerBackend.Business
             return workout;
         }
 
-        public async Task<IEnumerable<Workout>> GetWorkoutsUser(string userName)
+        public async Task<IEnumerable<Workout>> GetWorkoutsUser(string userMail)
         {
-            var currentUser = await _userManager.FindByNameAsync(userName);
+            var currentUser = await _userManager.FindByEmailAsync(userMail);
 
             if (currentUser == null)
             {
-                throw new InvalidOperationException($"User {userName} does not exist.");
+                throw new InvalidOperationException($"User {userMail} does not exist.");
             }
 
             var workouts = await _workoutRepository.GetAllWorkoutsUser(currentUser.Email);
 
             if (workouts == null)
             {
-                throw new InvalidOperationException($"No workouts found for user {userName}");
+                throw new InvalidOperationException($"No workouts found for user {currentUser.Email}");
             }
 
             return workouts;

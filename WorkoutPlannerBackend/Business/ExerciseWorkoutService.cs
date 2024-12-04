@@ -35,14 +35,14 @@ namespace WorkoutPlannerBackend.Business
             return await _exerciseWorkoutRepository.AddExerciseWorkout(exerciseWorkout);
         }
 
-        public async Task<IEnumerable<ExerciseWorkout>> GetExercisesWorkout(string userName)
+        public async Task<IEnumerable<ExerciseWorkout>> GetExercisesWorkout(string userMail)
         {
-            return await _exerciseWorkoutRepository.GetExercisesWorkoutUser(userName);
+            return await _exerciseWorkoutRepository.GetExercisesWorkoutUser(userMail);
         }
 
-        public async Task<ExerciseWorkout> GetExerciseWorkout(string userName, string exerciseWorkoutId)
+        public async Task<ExerciseWorkout> GetExerciseWorkout(string userMail, string exerciseWorkoutId)
         {
-            var exerciseWorkout = await _exerciseWorkoutRepository.GetExerciseWorkoutUser(userName, exerciseWorkoutId);
+            var exerciseWorkout = await _exerciseWorkoutRepository.GetExerciseWorkoutUser(userMail, exerciseWorkoutId);
 
             return exerciseWorkout;
         }
