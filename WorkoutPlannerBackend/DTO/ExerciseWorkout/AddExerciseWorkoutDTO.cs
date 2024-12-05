@@ -3,7 +3,7 @@ using WorkoutPlannerBackend.Entities.Models;
 
 namespace WorkoutPlannerBackend.DTO.ExerciseWorkout
 {
-    public class ExerciseWorkoutDTO
+    public class AddExerciseWorkoutDTO
     {
         [Required]
         public string exerciseId { get; set; }

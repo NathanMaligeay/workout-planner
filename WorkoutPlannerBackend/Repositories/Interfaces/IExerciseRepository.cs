@@ -2,13 +2,11 @@
 
 namespace WorkoutPlannerBackend.Repositories.Interfaces
 {
-    public interface IExerciseRepository
+    public interface IExerciseRepository 
     {
         Task<IEnumerable<Exercise>> GetExercises();
-        Task<Exercise> GetExerciseByName(string ExerciseName);
-        Task<Exercise> GetExerciseById(string ExerciseId);
-        Task<bool> AddExercise(Exercise exercise);
-        Task<IEnumerable<Exercise>> GetExercisesUser(string userEmail);
-        Task<bool> DeleteExercise(string ExerciseName);
+        Task<Exercise> GetExerciseByName(string exerciseName);
+        Task<Exercise> GetExerciseById(string exerciseId);
+        Task<bool> DeleteExercise(string exerciseId);
     }
 }

@@ -20,5 +20,6 @@
         UpperTraps = 15,
         Biceps = 16,
         Triceps = 17,
+        Pecs = 18,
     }
 }

@@ -35,13 +35,13 @@ namespace WorkoutPlannerBackend.Repositories
             return true;
         }
 
-        public async Task<IEnumerable<Workout>> GetAllWorkoutsUser(string userEmail)
+        public async Task<IEnumerable<Workout>> GetAllWorkoutsUser(AppUser user)
         {
-            var currentUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+            var currentUser = await _dbContext.Users.FindAsync(user.Id);
 
             if (currentUser == null) 
             {
-                throw new InvalidOperationException($"User not found");
+                throw new InvalidOperationException($"User {user.UserName} not found");
             }
 
             return await _dbContext.Workouts

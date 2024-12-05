@@ -42,10 +42,10 @@ namespace WorkoutPlannerBackend.Repositories
             return true;
         }
 
-        public async Task<Exercise> GetExerciseByName(string ExerciseName)
+        public async Task<Exercise> GetExerciseByName(string exerciseName)
         {
-            var exercise = await _dbContext.Exercises.FirstOrDefaultAsync(e => e.ExerciseName.ToLower().Trim() == ExerciseName)
-                ?? throw new Exception($"Exercise {ExerciseName} not found.");
+            var exercise = await _dbContext.Exercises.FirstOrDefaultAsync(e => e.ExerciseName.ToLower().Trim() == exerciseName)
+                ?? throw new Exception($"Exercise {exerciseName} not found.");
 
             return exercise;
 
@@ -66,11 +66,11 @@ namespace WorkoutPlannerBackend.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Exercise>> GetExercisesUser(string userEmail)
-        {
-            return await _dbContext.Exercises
-                .Where(e => e.AppUser.Email == userEmail)
-                .ToListAsync();
-        }
+        //public async Task<IEnumerable<Exercise>> GetExercisesUser(string userEmail)
+        //{
+        //    return await _dbContext.Exercises
+        //        .Where(e => e.AppUser.Email == userEmail)
+        //        .ToListAsync();
+        //}
     }
 }

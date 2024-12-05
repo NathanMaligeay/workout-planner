@@ -22,7 +22,7 @@ namespace WorkoutPlannerBackend.Business
             _userManager = userManager;
             _dbContext = dbContext;
         }
-        public async Task<bool> CreateExerciseWorkout(ExerciseWorkoutDTO exerciseWorkoutDTO)
+        public async Task<bool> CreateExerciseWorkout(AddExerciseWorkoutDTO exerciseWorkoutDTO)
         {
             var exerciseWorkout = new ExerciseWorkout
             {
@@ -35,14 +35,14 @@ namespace WorkoutPlannerBackend.Business
             return await _exerciseWorkoutRepository.AddExerciseWorkout(exerciseWorkout);
         }
 
-        public async Task<IEnumerable<ExerciseWorkout>> GetExercisesWorkout(string userMail)
+        public async Task<IEnumerable<ExerciseWorkout>> GetExercisesWorkout(AppUser user)
         {
-            return await _exerciseWorkoutRepository.GetExercisesWorkoutUser(userMail);
+            return await _exerciseWorkoutRepository.GetExercisesWorkoutUser(user);
         }
 
-        public async Task<ExerciseWorkout> GetExerciseWorkout(string userMail, string exerciseWorkoutId)
+        public async Task<ExerciseWorkout> GetExerciseWorkout(AppUser user, string exerciseWorkoutId)
         {
-            var exerciseWorkout = await _exerciseWorkoutRepository.GetExerciseWorkoutUser(userMail, exerciseWorkoutId);
+            var exerciseWorkout = await _exerciseWorkoutRepository.GetExerciseWorkoutById(exerciseWorkoutId);
 
             return exerciseWorkout;
         }
@@ -52,7 +52,7 @@ namespace WorkoutPlannerBackend.Business
             return await _exerciseWorkoutRepository.DeleteExerciseWorkout(exerciseWorkoutId);
         }
 
-        public async Task<bool> UpdateExerciseWorkout(string exerciseWorkoutId, ExerciseWorkoutDTO exerciseWorkoutDTO)
+        public async Task<bool> UpdateExerciseWorkout(string exerciseWorkoutId, AddExerciseWorkoutDTO exerciseWorkoutDTO)
         {
             var exerciseWorkout = await _exerciseWorkoutRepository.GetExerciseWorkoutById(exerciseWorkoutId);
 

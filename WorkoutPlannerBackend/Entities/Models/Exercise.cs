@@ -11,8 +11,6 @@ namespace WorkoutPlannerBackend.Entities.Models
         public string ExerciseName { get; set; }
         [Required]
         public List<MuscleGroupEnum> MuscleGroups { get; set; }
-        public string AppUserId { get; set; }
-        public AppUser AppUser { get; set; }
         public string Video {  get; set; }
 
     }

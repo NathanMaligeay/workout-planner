@@ -9,6 +9,9 @@ using WorkoutPlannerBackend.Repositories;
 using WorkoutPlannerBackend.Repositories.Interfaces;
 using Newtonsoft.Json;
 using WorkoutPlannerBackend.Services.Token;
+using WorkoutPlannerBackend.Business.Interfaces;
+using WorkoutPlannerBackend.Business;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -83,6 +86,7 @@ builder.Services.AddAuthentication(options => {
 }).AddJwtBearer(options => {
     options.TokenValidationParameters = new TokenValidationParameters
     {
+        NameClaimType = ClaimTypes.Email,
         ValidateIssuer = true,
         ValidIssuer = builder.Configuration["JWT:Issuer"],
         ValidateAudience = true,
@@ -95,9 +99,14 @@ builder.Services.AddAuthentication(options => {
 });
 
 builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
+builder.Services.AddScoped<ICustomExerciseRepository, CustomExerciseRepository>();
 builder.Services.AddScoped<IExerciseWorkoutRepository, ExerciseWorkoutRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IWorkoutRepository, WorkoutRepository>();
+
+builder.Services.AddScoped<ICustomExerciseService, CustomExerciseService>();
+builder.Services.AddScoped<IExerciseWorkoutService, ExerciseWorkoutService>();
+builder.Services.AddScoped<IWorkoutService, WorkoutService>();
 
 var app = builder.Build();
 

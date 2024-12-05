@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WorkoutPlannerBackend.Business.Interfaces;
 using WorkoutPlannerBackend.DTO.Exercise;
 using WorkoutPlannerBackend.Entities.Models;
+using WorkoutPlannerBackend.Repositories.Interfaces;
 
 namespace WorkoutPlannerBackend.ApiControllers
 {
@@ -10,42 +12,45 @@ namespace WorkoutPlannerBackend.ApiControllers
     [Route("[controller]")]
     public class ExercisesController : ControllerBase
     {
-        private readonly IExerciseService _exerciseService;
+        private readonly IExerciseRepository _exerciseRepository;
+        private readonly ICustomExerciseService _customExerciseService;
         private readonly UserManager<AppUser> _userManager;
 
         public ExercisesController(
-            IExerciseService exerciseService,
+            IExerciseRepository exerciseRepository,
+            ICustomExerciseService customExerciseService,
             UserManager<AppUser> userManager
             )
         {
-            _exerciseService = exerciseService;
+            _exerciseRepository = exerciseRepository;
+            _customExerciseService = customExerciseService;
             _userManager = userManager;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [Authorize]
+        public async Task<IActionResult> GetBaseExercises()
         {
-            var currentUser = await _userManager.GetUserAsync(User);
+            var baseExercises = await _exerciseRepository.GetExercises();
 
-            if (currentUser == null) 
-            {
-                return Unauthorized();
-            }
+            return Ok(baseExercises);
+            //var currentUser = await _userManager.GetUserAsync(User);
 
-            var exercises = await _exerciseService.GetExercises(currentUser.Email);
+            //var exercises = await _customExerciseService.GetExercises(currentUser);
 
-            return Ok(exercises);
+            //return Ok(exercises);
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById([FromRoute] string exerciseName)
+        [Authorize]
+        public async Task<IActionResult> GetById([FromRoute] string exerciseId)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var exercise = await _exerciseService.GetExercise(exerciseName);
+            var exercise = await _customExerciseService.GetCustomExerciseById(exerciseId);
 
             if (exercise == null)
             {
@@ -55,7 +60,10 @@ namespace WorkoutPlannerBackend.ApiControllers
             return Ok(exercise);
         }
 
+
+
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateExercise([FromBody] CreateExerciseDTO exerciseDTO)
         {
             if (!ModelState.IsValid)
@@ -70,7 +78,7 @@ namespace WorkoutPlannerBackend.ApiControllers
                 return Unauthorized();
             }
 
-            if (exerciseDTO.Video == null) 
+            if (exerciseDTO.Video.Length == 0) 
             {
                 var exercise = new CustomExerciseDTO 
                 { 
@@ -78,7 +86,7 @@ namespace WorkoutPlannerBackend.ApiControllers
                     MuscleGroups = exerciseDTO.MuscleGroups,
                 };
                 
-                await _exerciseService.AddCustomExercise(exercise);
+                await _customExerciseService.AddCustomExercise(currentUser, exercise);
                 return Ok(exercise);
             } else
             {
@@ -89,7 +97,7 @@ namespace WorkoutPlannerBackend.ApiControllers
                     Video = exerciseDTO.Video,
                 };
                 
-                await _exerciseService.AddCustomExerciseWithVideo(exercise);
+                await _customExerciseService.AddCustomExerciseWithVideo(currentUser, exercise);
                 return Ok(exercise);
             }
         }
