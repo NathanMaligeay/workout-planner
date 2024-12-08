@@ -227,15 +227,38 @@ namespace WorkoutPlannerBackend.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("WorkoutPlannerBackend.Entities.Models.Exercise", b =>
+            modelBuilder.Entity("WorkoutPlannerBackend.Entities.Models.CustomExercise", b =>
                 {
                     b.Property<string>("ExerciseId")
                         .HasColumnType("text");
 
-                    b.Property<string>("Discriminator")
+                    b.Property<string>("AppUserId")
                         .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("character varying(21)");
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExerciseName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("MuscleGroups")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Video")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("ExerciseId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("CustomExercises");
+                });
+
+            modelBuilder.Entity("WorkoutPlannerBackend.Entities.Models.Exercise", b =>
+                {
+                    b.Property<string>("ExerciseId")
+                        .HasColumnType("text");
 
                     b.Property<string>("ExerciseName")
                         .IsRequired()
@@ -252,10 +275,6 @@ namespace WorkoutPlannerBackend.Migrations
                     b.HasKey("ExerciseId");
 
                     b.ToTable("Exercises");
-
-                    b.HasDiscriminator().HasValue("Exercise");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("WorkoutPlannerBackend.Entities.Models.ExerciseWorkout", b =>
@@ -319,19 +338,6 @@ namespace WorkoutPlannerBackend.Migrations
                     b.HasDiscriminator().HasValue("AppUser");
                 });
 
-            modelBuilder.Entity("WorkoutPlannerBackend.Entities.Models.CustomExercise", b =>
-                {
-                    b.HasBaseType("WorkoutPlannerBackend.Entities.Models.Exercise");
-
-                    b.Property<string>("AppUserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasIndex("AppUserId");
-
-                    b.HasDiscriminator().HasValue("CustomExercise");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -383,6 +389,17 @@ namespace WorkoutPlannerBackend.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("WorkoutPlannerBackend.Entities.Models.CustomExercise", b =>
+                {
+                    b.HasOne("WorkoutPlannerBackend.Entities.Models.AppUser", "AppUser")
+                        .WithMany("CustomExercises")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+                });
+
             modelBuilder.Entity("WorkoutPlannerBackend.Entities.Models.ExerciseWorkout", b =>
                 {
                     b.HasOne("WorkoutPlannerBackend.Entities.Models.Exercise", "Exercise")
@@ -406,17 +423,6 @@ namespace WorkoutPlannerBackend.Migrations
                 {
                     b.HasOne("WorkoutPlannerBackend.Entities.Models.AppUser", "AppUser")
                         .WithMany("Workouts")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-                });
-
-            modelBuilder.Entity("WorkoutPlannerBackend.Entities.Models.CustomExercise", b =>
-                {
-                    b.HasOne("WorkoutPlannerBackend.Entities.Models.AppUser", "AppUser")
-                        .WithMany("CustomExercises")
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

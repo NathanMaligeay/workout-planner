@@ -16,7 +16,7 @@ namespace WorkoutPlannerBackend.Repositories
         }
         public async Task<bool> AddCustomExercise(CustomExercise exercise)
         {
-            var exists = await _dbContext.CustomExercise.FindAsync(exercise.ExerciseId);
+            var exists = await _dbContext.CustomExercises.FindAsync(exercise.ExerciseId);
 
             if (exists != null)
             {
@@ -31,7 +31,7 @@ namespace WorkoutPlannerBackend.Repositories
 
         public async Task<CustomExercise> GetCustomExerciseById(string exerciseId)
         {
-            var exists = await _dbContext.CustomExercise.FirstOrDefaultAsync(e => e.ExerciseId == exerciseId);
+            var exists = await _dbContext.CustomExercises.FirstOrDefaultAsync(e => e.ExerciseId == exerciseId);
 
             if (exists == null)
             {
@@ -50,7 +50,7 @@ namespace WorkoutPlannerBackend.Repositories
                 throw new InvalidOperationException($"User {user.UserName} does not exist");
             }
 
-            var exercises = await _dbContext.CustomExercise
+            var exercises = await _dbContext.CustomExercises
                 .Where(ce => ce.AppUser == currentUser)
                 .ToListAsync();
 
@@ -59,7 +59,7 @@ namespace WorkoutPlannerBackend.Repositories
 
         public async Task<CustomExercise> UpdateCustomExercise(CustomExercise exercise)
         {
-            var exists = await _dbContext.CustomExercise.FindAsync(exercise.ExerciseId);
+            var exists = await _dbContext.CustomExercises.FindAsync(exercise.ExerciseId);
 
             if (exists == null)
             {

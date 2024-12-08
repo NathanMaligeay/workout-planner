@@ -32,6 +32,10 @@ namespace WorkoutPlannerBackend.Business
         {
             var currentUser = await _userManager.FindByIdAsync(user.Id);
             
+            Console.WriteLine("before");
+            Console.WriteLine(currentUser);
+            Console.WriteLine("after");
+
             if (currentUser == null)
             {
                 throw new InvalidOperationException($"Error with user");
@@ -63,6 +67,10 @@ namespace WorkoutPlannerBackend.Business
         public async Task<bool> AddCustomExerciseWithVideo(AppUser user, CustomExerciseWithVideoDTO customExerciseWithVideoDTO)
         {
             var currentUser = await _userManager.FindByIdAsync(user.Id);
+
+            Console.WriteLine("before");
+            Console.WriteLine(currentUser);
+            Console.WriteLine("after");
 
             if (currentUser == null)
             {

@@ -12,8 +12,8 @@ using WorkoutPlannerBackend.Entities;
 namespace WorkoutPlannerBackend.Migrations
 {
     [DbContext(typeof(WPDbContext))]
-    [Migration("20241203161155_UpdateModels")]
-    partial class UpdateModels
+    [Migration("20241208135144_ResetDb")]
+    partial class ResetDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -230,7 +230,7 @@ namespace WorkoutPlannerBackend.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("WorkoutPlannerBackend.Entities.Models.Exercise", b =>
+            modelBuilder.Entity("WorkoutPlannerBackend.Entities.Models.CustomExercise", b =>
                 {
                     b.Property<string>("ExerciseId")
                         .HasColumnType("text");
@@ -243,9 +243,9 @@ namespace WorkoutPlannerBackend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int[]>("MuscleGroups")
+                    b.Property<string>("MuscleGroups")
                         .IsRequired()
-                        .HasColumnType("integer[]");
+                        .HasColumnType("text");
 
                     b.Property<string>("Video")
                         .IsRequired()
@@ -254,6 +254,28 @@ namespace WorkoutPlannerBackend.Migrations
                     b.HasKey("ExerciseId");
 
                     b.HasIndex("AppUserId");
+
+                    b.ToTable("CustomExercises");
+                });
+
+            modelBuilder.Entity("WorkoutPlannerBackend.Entities.Models.Exercise", b =>
+                {
+                    b.Property<string>("ExerciseId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExerciseName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("MuscleGroups")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Video")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("ExerciseId");
 
                     b.ToTable("Exercises");
                 });
@@ -370,7 +392,7 @@ namespace WorkoutPlannerBackend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WorkoutPlannerBackend.Entities.Models.Exercise", b =>
+            modelBuilder.Entity("WorkoutPlannerBackend.Entities.Models.CustomExercise", b =>
                 {
                     b.HasOne("WorkoutPlannerBackend.Entities.Models.AppUser", "AppUser")
                         .WithMany("CustomExercises")

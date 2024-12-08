@@ -27,30 +27,46 @@ namespace WorkoutPlannerBackend.ApiControllers
             _userManager = userManager;
         }
 
-        [HttpGet]
+        [HttpGet("")]
         [Authorize]
         public async Task<IActionResult> GetBaseExercises()
         {
             var baseExercises = await _exerciseRepository.GetExercises();
 
             return Ok(baseExercises);
-            //var currentUser = await _userManager.GetUserAsync(User);
-
-            //var exercises = await _customExerciseService.GetExercises(currentUser);
-
-            //return Ok(exercises);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("user/{name}")]
         [Authorize]
-        public async Task<IActionResult> GetById([FromRoute] string exerciseId)
+        public async Task<IActionResult> GetUserExercises([FromRoute] string name)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var exercise = await _customExerciseService.GetCustomExerciseById(exerciseId);
+            var user = await _userManager.FindByNameAsync(name);
+
+            if (user == null) 
+            {
+                throw new InvalidOperationException($"User {name} not found");
+            }
+
+            var userExercises = await _customExerciseService.GetExercises(user);
+
+            return Ok(userExercises);
+        }
+
+        [HttpGet("{id:int}")]
+        [Authorize]
+        public async Task<IActionResult> GetById([FromRoute] string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var exercise = await _customExerciseService.GetCustomExerciseById(id);
 
             if (exercise == null)
             {

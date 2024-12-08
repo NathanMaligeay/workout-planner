@@ -15,7 +15,7 @@ namespace WorkoutPlannerBackend.Entities
         }
 
         public DbSet<Exercise> Exercises { get; set; }
-        public DbSet<CustomExercise> CustomExercise { get; set; }
+        public DbSet<CustomExercise> CustomExercises { get; set; }
         public DbSet<Workout> Workouts { get; set; }
         public DbSet<ExerciseWorkout> ExercisesWorkout { get; set; }
         
@@ -23,12 +23,6 @@ namespace WorkoutPlannerBackend.Entities
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<CustomExercise>()
-       .HasOne(ce => ce.AppUser)             // Navigation property in CustomExercise
-       .WithMany(a => a.CustomExercises)     // Reverse navigation in AppUser (if applicable)
-       .HasForeignKey(ce => ce.AppUserId)    // Foreign key property in CustomExercise
-       .OnDelete(DeleteBehavior.Cascade);
 
             var muscleGroupsConverter = new ValueConverter<List<MuscleGroupEnum>, string>(
         v => string.Join(',', v.Select(m => m.ToString())),  // Convert List<Enum> to string
@@ -43,6 +37,11 @@ namespace WorkoutPlannerBackend.Entities
                 c => c.ToList());  // Clone the list to ensure immutability
 
             modelBuilder.Entity<Exercise>()
+                .Property(e => e.MuscleGroups)
+                .HasConversion(muscleGroupsConverter)  // Apply value converter
+                .Metadata.SetValueComparer(muscleGroupsComparer);  // Apply value comparer
+
+            modelBuilder.Entity<CustomExercise>()
                 .Property(e => e.MuscleGroups)
                 .HasConversion(muscleGroupsConverter)  // Apply value converter
                 .Metadata.SetValueComparer(muscleGroupsComparer);  // Apply value comparer

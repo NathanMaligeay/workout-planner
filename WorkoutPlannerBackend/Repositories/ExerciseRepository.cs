@@ -65,12 +65,5 @@ namespace WorkoutPlannerBackend.Repositories
                 .AsNoTracking()
                 .ToListAsync();
         }
-
-        //public async Task<IEnumerable<Exercise>> GetExercisesUser(string userEmail)
-        //{
-        //    return await _dbContext.Exercises
-        //        .Where(e => e.AppUser.Email == userEmail)
-        //        .ToListAsync();
-        //}
     }
 }
