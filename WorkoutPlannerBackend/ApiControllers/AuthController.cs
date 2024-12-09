@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using WorkoutPlannerBackend.DTO.Account;
+using WorkoutPlannerBackend.DTO.AccountDTO;
 using WorkoutPlannerBackend.Entities.Models;
 using WorkoutPlannerBackend.Services.Token;
 

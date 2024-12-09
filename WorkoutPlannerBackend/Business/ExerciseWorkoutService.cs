@@ -3,7 +3,7 @@ using WorkoutPlannerBackend.Business.Interfaces;
 using WorkoutPlannerBackend.Entities.Models;
 using WorkoutPlannerBackend.Entities;
 using WorkoutPlannerBackend.Repositories.Interfaces;
-using WorkoutPlannerBackend.DTO.ExerciseWorkout;
+using WorkoutPlannerBackend.DTO.ExerciseWorkoutDTO;
 
 namespace WorkoutPlannerBackend.Business
 {

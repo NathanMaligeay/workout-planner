@@ -1,4 +1,4 @@
-﻿using WorkoutPlannerBackend.DTO.ExerciseWorkout;
+﻿using WorkoutPlannerBackend.DTO.ExerciseWorkoutDTO;
 using WorkoutPlannerBackend.Entities.Models;
 
 namespace WorkoutPlannerBackend.Business.Interfaces

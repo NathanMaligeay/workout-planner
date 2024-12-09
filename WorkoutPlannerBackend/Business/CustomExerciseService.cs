@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using WorkoutPlannerBackend.Business.Interfaces;
-using WorkoutPlannerBackend.DTO.Exercise;
+using WorkoutPlannerBackend.DTO.ExerciseDTO;
 using WorkoutPlannerBackend.Entities;
 using WorkoutPlannerBackend.Entities.Models;
 using WorkoutPlannerBackend.Repositories;
@@ -28,49 +28,9 @@ namespace WorkoutPlannerBackend.Business
             _dbContext = dbContext;
         }
 
-        public async Task<bool> AddCustomExercise(AppUser user, CustomExerciseDTO customExerciseDTO)
+        public async Task<bool> AddCustomExercise(AppUser user, CustomExerciseDTO customExercise)
         {
             var currentUser = await _userManager.FindByIdAsync(user.Id);
-            
-            Console.WriteLine("before");
-            Console.WriteLine(currentUser);
-            Console.WriteLine("after");
-
-            if (currentUser == null)
-            {
-                throw new InvalidOperationException($"Error with user");
-            }
-
-            var exercise = new CustomExercise
-            {
-                AppUser = currentUser,
-                AppUserId = currentUser.Id,
-                ExerciseName = customExerciseDTO.ExerciseName,
-                MuscleGroups = customExerciseDTO.MuscleGroups,
-            };
-            
-            using var transaction = await _dbContext.Database.BeginTransactionAsync();
-            try
-            {
-                await _customExerciseRepository.AddCustomExercise(exercise);
-
-                await transaction.CommitAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                await transaction.RollbackAsync();
-                throw new InvalidOperationException(ex.Message);
-            }
-        }
-
-        public async Task<bool> AddCustomExerciseWithVideo(AppUser user, CustomExerciseWithVideoDTO customExerciseWithVideoDTO)
-        {
-            var currentUser = await _userManager.FindByIdAsync(user.Id);
-
-            Console.WriteLine("before");
-            Console.WriteLine(currentUser);
-            Console.WriteLine("after");
 
             if (currentUser == null)
             {
@@ -81,9 +41,9 @@ namespace WorkoutPlannerBackend.Business
             { 
                 AppUser = currentUser,
                 AppUserId = currentUser.Id,
-                ExerciseName = customExerciseWithVideoDTO.ExerciseName, 
-                MuscleGroups = customExerciseWithVideoDTO.MuscleGroups, 
-                Video = customExerciseWithVideoDTO.Video 
+                ExerciseName = customExercise.ExerciseName, 
+                MuscleGroups = customExercise.MuscleGroups, 
+                Video = customExercise.Video 
             };
 
             using var transaction = await _dbContext.Database.BeginTransactionAsync();
@@ -103,7 +63,7 @@ namespace WorkoutPlannerBackend.Business
 
         public async Task<bool> DeleteCustomExercise(AppUser user, CustomExercise exercise)
         {
-            var exists = _exerciseRepository.GetExerciseById(exercise.ExerciseId);
+            var exists = await _customExerciseRepository.GetCustomExerciseById(exercise.ExerciseId);
 
             if (exists == null)
             {
@@ -117,21 +77,26 @@ namespace WorkoutPlannerBackend.Business
                 throw new InvalidOperationException($"Error with user");
             }
 
-            //var userExercise = await _dbContext.CustomExercise.FindAsync(exists.Id);
-
             if (exercise.AppUser != user) 
             {
                 throw new InvalidOperationException($"You are not the owner of this exercise");
             }
 
-            _dbContext.Remove(exists);
+            await _customExerciseRepository.DeleteCustomExercise(user, exists);
             await _dbContext.SaveChangesAsync();
 
             return true;
         }
 
-        public async Task<CustomExercise> GetCustomExerciseById(string exerciseId)
+        public async Task<CustomExercise> GetCustomExerciseById(AppUser user, string exerciseId)
         {
+            var currentUser = await _userManager.FindByIdAsync(user.Id);
+
+            if (currentUser == null)
+            {
+                throw new InvalidOperationException($"Error with user");
+            }
+
             var exercise = await _customExerciseRepository.GetCustomExerciseById(exerciseId);
 
             if (exercise == null)
@@ -139,11 +104,40 @@ namespace WorkoutPlannerBackend.Business
                 throw new InvalidOperationException($"Exercise with id {exerciseId} not found");
             }
 
+            if (exercise.AppUser != user)
+            {
+                throw new InvalidOperationException($"You are not the owner of this exercise");
+            }
+
             return exercise;
 
         }
 
-        public async Task<IEnumerable<CustomExercise>> GetExercises(AppUser user)
+        public async Task<CustomExercise> GetCustomExerciseByName(AppUser user, string exerciseName)
+        {
+            var currentUser = await _userManager.FindByIdAsync(user.Id);
+
+            if (currentUser == null)
+            {
+                throw new InvalidOperationException($"Error with user");
+            }
+
+            var exercise = await _customExerciseRepository.GetCustomExerciseByName(user, exerciseName);
+
+            if (exercise == null)
+            {
+                throw new InvalidOperationException($"Exercise {exerciseName} not found");
+            }
+
+            if (exercise.AppUser != user)
+            {
+                throw new InvalidOperationException($"You are not the owner of this exercise");
+            }
+
+            return exercise;
+        }
+
+        public async Task<IEnumerable<CustomExerciseDTO>> GetExercises(AppUser user)
         {
             var currentUser = await _userManager.FindByIdAsync(user.Id);
 

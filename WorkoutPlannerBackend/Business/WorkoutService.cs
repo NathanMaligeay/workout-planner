@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using WorkoutPlannerBackend.Business.Interfaces;
+using WorkoutPlannerBackend.DTO.Workout;
 using WorkoutPlannerBackend.Entities;
 using WorkoutPlannerBackend.Entities.Models;
 using WorkoutPlannerBackend.Repositories;
@@ -52,13 +53,18 @@ namespace WorkoutPlannerBackend.Business
             return await _workoutRepository.AddWorkout(workout);
         }
 
-        public async Task<bool> DeleteWorkout(string workoutId)
+        public async Task<bool> DeleteWorkout(string workoutId, AppUser user)
         {
             var workout = await _workoutRepository.GetWorkoutById(workoutId);
 
             if ( workout == null )
             {
                 throw new InvalidOperationException($"Workout {workoutId} does not exist");
+            }
+
+            if (workout.AppUser != user)
+            {
+                throw new InvalidOperationException("You are not the owner of this workout");
             }
 
             return await _workoutRepository.DeleteWorkout(workoutId);
@@ -108,6 +114,20 @@ namespace WorkoutPlannerBackend.Business
             await _dbContext.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<Workout> UpdateWorkout(string workoutId, WorkoutDTO workoutDTO)
+        {
+            var existingWorkout = await _workoutRepository.GetWorkoutById(workoutId);
+
+            if (existingWorkout == null)
+            {
+                return null;
+            }
+
+            await _workoutRepository.UpdateWorkout(workoutId, workoutDTO);
+
+            return existingWorkout;
         }
     }
 }

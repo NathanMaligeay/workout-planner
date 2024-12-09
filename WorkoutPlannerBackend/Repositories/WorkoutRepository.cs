@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WorkoutPlannerBackend.DTO.Workout;
 using WorkoutPlannerBackend.Entities;
 using WorkoutPlannerBackend.Entities.Models;
 using WorkoutPlannerBackend.Repositories.Interfaces;
@@ -61,19 +62,18 @@ namespace WorkoutPlannerBackend.Repositories
             return workout;
         }
 
-        public async Task<bool> UpdateWorkout(Workout workout)
+        public async Task<bool> UpdateWorkout(string workoutId, WorkoutDTO workoutDTO)
         {
-            var exists = await _dbContext.Workouts.FirstOrDefaultAsync(w => w.WorkoutId == workout.WorkoutId);
+            var workout = await _dbContext.Workouts.FindAsync(workoutId);
 
-            if (exists == null)
+            if (workout == null)
             {
-                throw new InvalidOperationException($"Workout {workout.WorkoutId} does not exist");
+                throw new InvalidOperationException($"Workout id {workoutId} not found");
             }
 
-            exists.ExerciseWorkoutList = workout.ExerciseWorkoutList;
-            exists.WorkoutName = workout.WorkoutName;
+            workout.ExerciseWorkoutList = workoutDTO.ExerciseWorkoutList;
+            workout.WorkoutName = workoutDTO.WorkoutName;
 
-            _dbContext.Workouts.Update(exists);
             await _dbContext.SaveChangesAsync();
 
             return true;

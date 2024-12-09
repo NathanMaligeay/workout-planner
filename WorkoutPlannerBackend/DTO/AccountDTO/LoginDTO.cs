@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WorkoutPlannerBackend.DTO.Account
+namespace WorkoutPlannerBackend.DTO.AccountDTO
 {
-    public class RegisterDTO
+    public class LoginDTO
     {
-        [Required]
-        public string Username { get; set; }
         [Required]
         public string Email { get; set; }
         [Required]
