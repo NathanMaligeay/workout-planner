@@ -12,8 +12,8 @@ using WorkoutPlannerBackend.Entities;
 namespace WorkoutPlannerBackend.Migrations
 {
     [DbContext(typeof(WPDbContext))]
-    [Migration("20241208135144_ResetDb")]
-    partial class ResetDb
+    [Migration("20241209184738_DbReset")]
+    partial class DbReset
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -14,7 +14,7 @@ namespace WorkoutPlannerBackend.ApiControllers
             _exerciseRepository = exerciseRepository;
         }
 
-        [HttpGet("")]
+        [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetBaseExercises()
         {
