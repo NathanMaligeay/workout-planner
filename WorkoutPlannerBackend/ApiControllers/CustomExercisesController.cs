@@ -12,7 +12,6 @@ namespace WorkoutPlannerBackend.ApiControllers
     [Route("[controller]")]
     public class CustomExercisesController : ControllerBase
     {
-        private readonly IExerciseRepository _exerciseRepository;
         private readonly ICustomExerciseService _customExerciseService;
         private readonly UserManager<AppUser> _userManager;
 

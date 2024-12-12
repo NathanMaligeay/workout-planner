@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace WorkoutPlannerBackend.Migrations
 {
     /// <inheritdoc />
-    public partial class ResetDb : Migration
+    public partial class DbReset : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
