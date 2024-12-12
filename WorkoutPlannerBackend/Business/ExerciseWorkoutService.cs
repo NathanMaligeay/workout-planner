@@ -22,11 +22,11 @@ namespace WorkoutPlannerBackend.Business
             _userManager = userManager;
             _dbContext = dbContext;
         }
-        public async Task<bool> CreateExerciseWorkout(AddExerciseWorkoutDTO exerciseWorkoutDTO)
+        public async Task<bool> CreateExerciseWorkout(string workoutId, AddExerciseWorkoutDTO exerciseWorkoutDTO)
         {
             var exerciseWorkout = new ExerciseWorkout
             {
-                WorkoutId = exerciseWorkoutDTO.workoutId,
+                WorkoutId = workoutId,
                 ExerciseId = exerciseWorkoutDTO.exerciseId,
                 Sets = exerciseWorkoutDTO.Sets,
                 Reps = exerciseWorkoutDTO.Reps,
@@ -52,22 +52,22 @@ namespace WorkoutPlannerBackend.Business
             return await _exerciseWorkoutRepository.DeleteExerciseWorkout(exerciseWorkoutId);
         }
 
-        public async Task<bool> UpdateExerciseWorkout(string exerciseWorkoutId, AddExerciseWorkoutDTO exerciseWorkoutDTO)
-        {
-            var exerciseWorkout = await _exerciseWorkoutRepository.GetExerciseWorkoutById(exerciseWorkoutId);
+        //public async Task<bool> UpdateExerciseWorkout(string exerciseWorkoutId, AddExerciseWorkoutDTO exerciseWorkoutDTO)
+        //{
+        //    var exerciseWorkout = await _exerciseWorkoutRepository.GetExerciseWorkoutById(exerciseWorkoutId);
 
-            if (exerciseWorkout == null)
-            {
-                throw new InvalidOperationException($"Exercise workout {exerciseWorkoutId} not found");
-            }
+        //    if (exerciseWorkout == null)
+        //    {
+        //        throw new InvalidOperationException($"Exercise workout {exerciseWorkoutId} not found");
+        //    }
 
-            exerciseWorkout.WorkoutId = exerciseWorkoutDTO.workoutId;
-            exerciseWorkout.ExerciseId = exerciseWorkoutDTO.exerciseId;
-            exerciseWorkout.Sets = exerciseWorkoutDTO.Sets;
-            exerciseWorkout.Reps = exerciseWorkoutDTO.Reps;
-            exerciseWorkout.Weight = exerciseWorkoutDTO.Weight;
+        //    exerciseWorkout.WorkoutId = exerciseWorkoutDTO.workoutId;
+        //    exerciseWorkout.ExerciseId = exerciseWorkoutDTO.exerciseId;
+        //    exerciseWorkout.Sets = exerciseWorkoutDTO.Sets;
+        //    exerciseWorkout.Reps = exerciseWorkoutDTO.Reps;
+        //    exerciseWorkout.Weight = exerciseWorkoutDTO.Weight;
             
-            return await _exerciseWorkoutRepository.UpdateExerciseWorkout(exerciseWorkout);
-        }
+        //    return await _exerciseWorkoutRepository.UpdateExerciseWorkout(exerciseWorkout);
+        //}
     }
 }

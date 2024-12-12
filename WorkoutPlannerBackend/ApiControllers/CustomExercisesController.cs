@@ -41,7 +41,7 @@ namespace WorkoutPlannerBackend.ApiControllers
             return Ok(userExercises);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id}")]
         [Authorize]
         public async Task<IActionResult> GetById([FromRoute] string id)
         {
@@ -64,7 +64,12 @@ namespace WorkoutPlannerBackend.ApiControllers
                 return NotFound();
             }
 
-            return Ok(exercise);
+            return Ok(new CreateExerciseDTO
+            {
+                ExerciseName = exercise.ExerciseName,
+                MuscleGroups = exercise.MuscleGroups,
+                Video = exercise.Video,
+            });
         }
 
         [HttpPost]

@@ -8,8 +8,6 @@ namespace WorkoutPlannerBackend.DTO.ExerciseWorkoutDTO
         [Required]
         public string exerciseId { get; set; }
         [Required]
-        public string workoutId { get; set; }
-        [Required]
         public int Sets { get; set; }
         [Required]
         public int Reps { get; set; }

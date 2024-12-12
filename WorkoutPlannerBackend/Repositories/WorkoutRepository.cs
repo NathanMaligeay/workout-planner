@@ -62,16 +62,30 @@ namespace WorkoutPlannerBackend.Repositories
             return workout;
         }
 
-        public async Task<bool> UpdateWorkout(string workoutId, WorkoutDTO workoutDTO)
+        public async Task<bool> UpdateWorkout(string workoutId, WorkoutDTO workoutDTO) //Maybe move to business logic?
         {
-            var workout = await _dbContext.Workouts.FindAsync(workoutId);
+            var workout = await _dbContext.Workouts
+                .Include(w => w.ExerciseWorkoutList)
+                .FirstOrDefaultAsync(w => w.WorkoutId == workoutId);
 
             if (workout == null)
             {
                 throw new InvalidOperationException($"Workout id {workoutId} not found");
             }
 
-            workout.ExerciseWorkoutList = workoutDTO.ExerciseWorkoutList;
+            _dbContext.ExercisesWorkout.RemoveRange(workout.ExerciseWorkoutList);
+
+            var exerciseWorkoutList = workoutDTO.ExerciseWorkoutList.Select(e => new ExerciseWorkout
+            {
+                ExerciseId = e.exerciseId,
+                WorkoutId = workout.WorkoutId,
+                Sets = e.Sets,
+                Reps = e.Reps,
+                Weight = e.Weight
+            }
+            ).ToList();
+
+            workout.ExerciseWorkoutList = exerciseWorkoutList;
             workout.WorkoutName = workoutDTO.WorkoutName;
 
             await _dbContext.SaveChangesAsync();

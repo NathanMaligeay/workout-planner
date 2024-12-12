@@ -36,11 +36,16 @@ namespace WorkoutPlannerBackend.ApiControllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> CreateWorkout([FromBody] WorkoutDTO workoutDTO)
+        public async Task<IActionResult> CreateWorkout([FromBody] WorkoutDTO workoutDTO) 
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            if (workoutDTO.ExerciseWorkoutList == null || workoutDTO.ExerciseWorkoutList.Count == 0)
+            {
+                return BadRequest("The workout must contain at least one exercise.");
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
@@ -48,13 +53,23 @@ namespace WorkoutPlannerBackend.ApiControllers
             var workoutModel = new Workout
             {
                 WorkoutName = workoutDTO.WorkoutName,
-                ExerciseWorkoutList = workoutDTO.ExerciseWorkoutList,
                 AppUser = currentUser,
                 AppUserId = currentUser.Id,
             };
 
+            workoutModel.ExerciseWorkoutList = workoutDTO.ExerciseWorkoutList.Select(e => new ExerciseWorkout
+            {
+                ExerciseId = e.exerciseId,
+                WorkoutId = workoutModel.WorkoutId,
+                Sets = e.Sets,
+                Reps = e.Reps,
+                Weight = e.Weight
+            })
+            .ToList();
+
             await _workoutService.CreateWorkout(workoutModel);
-            return Ok(workoutModel);
+
+            return Ok(workoutModel); //TODO: dont return the entire model
         }
 
         [Authorize]

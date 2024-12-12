@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WorkoutPlannerBackend.Entities;
@@ -11,9 +12,11 @@ using WorkoutPlannerBackend.Entities;
 namespace WorkoutPlannerBackend.Migrations
 {
     [DbContext(typeof(WPDbContext))]
-    partial class WPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241211130349_AbstractExerciseInheritance")]
+    partial class AbstractExerciseInheritance
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

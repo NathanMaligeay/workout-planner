@@ -24,17 +24,20 @@ namespace WorkoutPlannerBackend.Entities
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Exercise>().ToTable("Exercises");
+            modelBuilder.Entity<CustomExercise>().ToTable("CustomExercises");
+
             var muscleGroupsConverter = new ValueConverter<List<MuscleGroupEnum>, string>(
-        v => string.Join(',', v.Select(m => m.ToString())),  // Convert List<Enum> to string
+        v => string.Join(',', v.Select(m => m.ToString())),
         v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
               .Select(e => Enum.Parse<MuscleGroupEnum>(e))
-              .ToList());  // Convert string back to List<Enum>
+              .ToList());
 
-            // Configure value comparer for MuscleGroups
+            
             var muscleGroupsComparer = new ValueComparer<List<MuscleGroupEnum>>(
-                (c1, c2) => c1.SequenceEqual(c2),  // Compare lists element by element
-                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),  // Generate hash code for the list
-                c => c.ToList());  // Clone the list to ensure immutability
+                (c1, c2) => c1.SequenceEqual(c2),
+                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                c => c.ToList());
 
             modelBuilder.Entity<Exercise>()
                 .Property(e => e.MuscleGroups)

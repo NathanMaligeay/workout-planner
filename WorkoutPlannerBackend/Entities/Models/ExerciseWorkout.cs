@@ -8,7 +8,7 @@ namespace WorkoutPlannerBackend.Entities.Models
         public string ExerciseWorkoutId { get; private set; } = Ulid.NewUlid().ToString();
         [Required]
         public string ExerciseId { get; set; }
-        public Exercise Exercise { get; set; }
+        public AbstractExercise Exercise { get; set; }
         [Required]
         public string WorkoutId { get; set; }
         public Workout Workout {  get; set; }
